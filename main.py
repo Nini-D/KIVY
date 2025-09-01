@@ -1,26 +1,34 @@
-import requests
 from kivy.app import App
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.label import Label
-from kivy.uix.button import Button
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.boxlayout import BoxLayout  # Adicionei isso
+from kivy.storage.jsonstore import JsonStore
 
-class JokeApp(App):
-    def build(self):
-        self.layout = BoxLayout(orientation='vertical', padding=20, spacing=10)
-        self.label = Label(text='Clique no botão para ver uma piada!', halign='center', valign='middle')
-        self.button = Button(text='Mostrar Piada')
-        self.button.bind(on_press=self.get_joke)
-        self.layout.add_widget(self.label)
-        self.layout.add_widget(self.button)
-        return self.layout
+# Cria o arquivo para salvar o nome
+store = JsonStore('dados.json')
 
-    def get_joke(self, instance):
-        response = requests.get('https://official-joke-api.appspot.com/random_joke')
-        if response.status_code == 200:
-            joke = response.json()
-            self.label.text = f"{joke['setup']}\n\n{joke['punchline']}"
+class TelaInicial(Screen):
+    def salvar_nome(self):
+        nome = self.ids.nome_input.text  # Pega o texto do campo
+        if nome:  # Só salva se tiver algo escrito
+            store.put('usuario', nome=nome)  # Salva o nome no JSON
+            self.manager.current = 'boas_vindas'  # Muda para a outra tela
         else:
-            self.label.text = 'Erro ao carregar piada.'
+            self.ids.nome_input.text = "Digite um nome!"  # Mostra erro se vazio
+
+class TelaBoasVindas(Screen):
+    def on_pre_enter(self):
+        if store.exists('usuario'):  # Verifica se tem nome salvo
+            nome = store.get('usuario')['nome']  # Pega o nome
+            self.ids.mensagem.text = f"Bem-vindo, {nome}!"  # Mostra na tela
+        else:
+            self.ids.mensagem.text = "Nenhum nome salvo!"  # Caso não tenha nome
+
+class GerenciadorTelas(ScreenManager):
+    pass
+
+class MeuApp(App):
+    def build(self):
+        return GerenciadorTelas()
 
 if __name__ == '__main__':
-    JokeApp().run()
+    MeuApp().run()

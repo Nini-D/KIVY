@@ -1,89 +1,38 @@
 #:kivy 2.3.1
 
 <GerenciadorTelas>:
+    TelaInicial:
     TelaBoasVindas:
-        name: "boasvindas"
-    TelaSugestao:
-        name: "sugestao"
 
-<TelaBoasVindas>:
+<TelaInicial>:
+    name: 'inicial'
     BoxLayout:
-        orientation: "vertical"
-        padding: 10
-        spacing: 15
+        orientation: 'vertical'
+        padding: 20
+        spacing: 10
 
         Label:
-            text: "Bem-vindo ao App de Filmes! :))"
-            font_size: 40
-            bold: True
-            halign: "center"
-            size_hint_y: None
-            height: 400
-            color: 1, 0, 1, 1
+            text: 'Digite seu nome:'
 
         TextInput:
-            id: input_nome
-            hint_text: "Digite seu nome"
+            id: nome_input
             multiline: False
-            size_hint_y: None
-            height: 50
 
         Button:
-            text: "Continuar"
-            background_color: 0, 1, 1, 1  # Azul
-            font_size: 20
-            size_hint_y: None
-            height: 90
-            on_press:
-                root.manager.get_screen("sugestao").set_nome(input_nome.text)
-                root.manager.current = "sugestao"
+            text: 'Salvar'
+            on_press: root.salvar_nome()
 
-
-<TelaSugestao>:
+<TelaBoasVindas>:
+    name: 'boas_vindas'
     BoxLayout:
-        orientation: "vertical"
+        orientation: 'vertical'
         padding: 20
-        spacing: 15
-
-        # Cabeçalho fixo
-        Label:
-            text: "Escolha seu Filme!"
-            font_size: 28
-            bold: True
-            halign: "center"
-            size_hint_y: None
-            height: 50
-            color: 0, 1, 1, 1  # Verde
+        spacing: 10
 
         Label:
-            id: label_boas_vindas
-            text: ""
-            font_size: 20
-            halign: "center"
-            valign: "middle"
-            text_size: self.width, None
-            size_hint_y: None
-            height: 40
-
-        Spinner:
-            id: spinner_genero
-            text: "Escolha um gênero"
-            values: ["Ação", "Comédia", "Animação"]
-            size_hint_y: None
-            height: 40
+            id: mensagem
+            text: ''
 
         Button:
-            text: "Sugerir Filme"
-            background_color: 1, 0, 0, 1  # Vermelho
-            font_size: 20
-            size_hint_y: None
-            height: 50
-            on_press: root.sugerir_filme()
-
-        Label:
-            id: label_filme
-            text: ""
-            font_size: 18
-            halign: "center"
-            valign: "middle"
-            text_size: self.width, None
+            text: 'Alterar nome'
+            on_press: app.root.current = 'inicial'
